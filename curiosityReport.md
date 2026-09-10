@@ -210,7 +210,7 @@ In the future I would like to dive into how Restic decrypts and restores a backu
 
 ## References
 - [Restic](https://restic.net/)
-- [Restic Design Docs](https://restic.readthedocs.io/en/stable/100_references.html#design)
 - [Restic Documentation Overview](https://restic.readthedocs.io/en/stable/index.html)
+- [Restic Reference Docs](https://restic.readthedocs.io/en/stable/100_references.html)
 - [Restic Backup Documentation](https://github.com/garethgeorge/backrest)
 - [Borg Cloud Integration](https://mikesmullin.github.io/borg-docs/index.html#cloud-integration)
