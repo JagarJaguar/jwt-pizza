@@ -1,5 +1,6 @@
 # Curiosity Report: Restic Backups
 
+
 ## What Is Restic?
 **Restic** is a backup program that allows for backing up files. It is modern, efficient, secure, and is designed to work across a multitude of operating systems such as Windows, macOS, Linux, and FreeBSD. Restic also uses an incremental backup model, meaning only the updated parts of files are backed up after the initial backup (the files that had changes made to them).
 
