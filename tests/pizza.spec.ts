@@ -4,7 +4,7 @@ import { Role, User } from '../src/service/pizzaService';
 
 async function basicInit(page: Page) {
     let loggedInUser: User | undefined;
-    const validUsers: Record<string, User> = { 'd@jwt.com': { id: '3', name: 'Kai Chen', email: 'd@jwt.com', password: 'a', roles: [{ role: Role.Admin }] } };
+    const validUsers: Record<string, User> = { 'd@jwt.com': { id: '3', name: 'Kai Chen', email: 'd@jwt.com', password: 'a', roles: [{ role: Role.Admin }] }, 'f@jwt.com': { id: '4', name: 'Kai Chen', email: 'f@jwt.com', password: 'a', roles: [{ role: Role.Franchisee }] } };
 
     // Authorize login for the given user
     await page.route('*/**/api/auth', async (route) => {
@@ -93,6 +93,24 @@ async function basicInit(page: Page) {
         };
         expect(route.request().method()).toBe('POST');
         await route.fulfill({ json: orderRes });
+    });
+
+    // Get user franchises
+    await page.route('*/**/api/franchise/4', async (route) => {
+        if (await route.request().method() == 'DELETE') {
+            await route.fulfill({ status: 200 });
+            return;
+        };
+        const franchiseRes = [{ id: 2, name: 'test', admins: [{ id: 4, name: 'franchisee owner', email: 'f@jwt.com' }], stores: [{ id: 4, name: 'SLC', totalRevenue: 0 }] }]
+        expect(route.request().method()).toBe('GET');
+        await route.fulfill({ json: franchiseRes });
+    });
+
+    // Create a store
+    await page.route('*/**/api/franchise/*/store', async (route) => {
+        const storeRes = { id: 2, name: 'SLC', totalRevenue: 0 }
+        expect(route.request().method()).toBe('POST');
+        await route.fulfill({ json: storeRes });
     });
 
     await page.goto('/');
@@ -185,6 +203,9 @@ test('close franchise', async ({ page }) => {
     await page.locator('tbody:nth-child(4) > .border-neutral-500 > .px-6 > .px-2').click();
     await expect(page.getByRole('button', { name: 'Close' })).toBeVisible();
     await page.getByRole('button', { name: 'Close' }).click();
+    await expect(page.getByRole('button', { name: 'Close' })).toBeVisible();
+    await expect(page.getByText('Sorry to see you go')).toBeVisible();
+    await page.getByRole('button', { name: 'Close' }).click();
 });
 
 test('check about and history pages and 404', async ({ page }) => {
@@ -216,4 +237,35 @@ test('logout', async ({ page }) => {
     // Logout
     await expect(page.getByRole('link', { name: 'Logout' })).toBeVisible();
     await page.getByRole('link', { name: 'Logout' }).click();
+});
+
+test('get user franchises', async ({ page }) => {
+    await basicInit(page);
+    await page.getByRole('link', { name: 'Login' }).click();
+    await page.getByRole('textbox', { name: 'Email address' }).fill('f@jwt.com');
+    await page.getByRole('textbox', { name: 'Password' }).fill('a');
+    await page.getByRole('button', { name: 'Login' }).click();
+    // Go to franchise page
+    await page.goto('/franchise-dashboard');
+    await expect(page.getByText('test')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Create store' })).toBeVisible();
+    // Close Store Page
+    await expect(page.getByRole('button', { name: 'Close' })).toBeVisible();
+    await page.getByRole('button', { name: 'Close' }).click();
+});
+
+test('create store', async ({ page }) => {
+    await basicInit(page);
+    await page.getByRole('link', { name: 'Login' }).click();
+    await page.getByRole('textbox', { name: 'Email address' }).fill('f@jwt.com');
+    await page.getByRole('textbox', { name: 'Password' }).fill('a');
+    await page.getByRole('button', { name: 'Login' }).click();
+    // Create store
+    await page.goto('/franchise-dashboard');
+    await page.getByRole('button', { name: 'Create store' }).click();
+    await expect(page.getByText('Create store')).toBeVisible();
+    await page.getByRole('textbox', { name: 'store name' }).click();
+    await page.getByRole('textbox', { name: 'store name' }).fill('test123');
+    await expect(page.getByRole('button', { name: 'Create' })).toBeVisible();
+    await page.getByRole('button', { name: 'Create' }).click();
 });
