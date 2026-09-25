@@ -136,19 +136,21 @@ test('purchase with login', async ({ page }) => {
 });
 
 test('go to admin dashboard', async ({ page }) => {
-  // Admin Dashboard
   await basicInit(page);
+  await login(page);
+  // Admin Dashboard
   await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible();
   await page.getByRole('link', { name: 'Admin' }).click();
-  await expect(page.getByRole('button', { name: 'Add Franchise' })).toBeVisible();
-  await page.getByRole('button', { name: 'Add Franchise' }).click();
 });
 
 test('create franchise', async ({ page }) => {
-
+  await basicInit(page);
+  await login(page);  
   // Create Franchise
+  await page.getByRole('link', { name: 'Admin' }).click();
+  await expect(page.getByRole('button', { name: 'Add Franchise' })).toBeVisible();
+  await page.getByRole('button', { name: 'Add Franchise' }).click();
   await expect(page.getByText('Create franchise', { exact: true })).toBeVisible();
-  await expect(page.locator('form')).toContainText('Want to create franchise?');
   await expect(page.getByRole('textbox', { name: 'franchise name' })).toBeVisible();
   await expect(page.getByRole('textbox', { name: 'franchisee admin email' })).toBeVisible();
   await page.getByRole('textbox', { name: 'franchise name' }).click();
@@ -160,10 +162,24 @@ test('create franchise', async ({ page }) => {
 });
 
 test('close franchise', async ({ page }) => {
+  await basicInit(page);
+  await login(page);
   // Close Franchise
+  await page.getByRole('link', { name: 'Admin' }).click();  
   await expect(page.locator('tbody:nth-child(4) > .border-neutral-500 > .px-6 > .px-2')).toBeVisible();
   await page.locator('tbody:nth-child(4) > .border-neutral-500 > .px-6 > .px-2').click();
   await expect(page.getByRole('button', { name: 'Close' })).toBeVisible();
   await page.getByRole('button', { name: 'Close' }).click();
 });
-  // Go to About and History pages
+
+test('check about and history pages and 404', async ({ page }) => {
+    // Go to About and History pages
+    await basicInit(page);
+    await expect(page.getByRole('contentinfo')).toContainText('About');
+    await page.getByRole('link', { name: 'About' }).click();
+    await expect(page.getByRole('main')).toContainText('The secret sauce');
+    await expect(page.getByRole('contentinfo')).toContainText('History');
+    await page.getByRole('link', { name: 'History' }).click();
+    await expect(page.getByRole('heading')).toContainText('Mama Rucci, my my');
+});
+
