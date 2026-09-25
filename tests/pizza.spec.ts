@@ -90,13 +90,16 @@ async function basicInit(page: Page) {
   await page.goto('/');
 }
 
-test('login', async ({ page }) => {
-  await basicInit(page);
+async function login(page: Page) {
   await page.getByRole('link', { name: 'Login' }).click();
   await page.getByRole('textbox', { name: 'Email address' }).fill('d@jwt.com');
   await page.getByRole('textbox', { name: 'Password' }).fill('a');
   await page.getByRole('button', { name: 'Login' }).click();
+}
 
+test('login', async ({ page }) => {
+  await basicInit(page);
+  await login(page);
   await expect(page.getByRole('link', { name: 'KC' })).toBeVisible();
 });
 
@@ -130,12 +133,18 @@ test('purchase with login', async ({ page }) => {
 
   // Check balance
   await expect(page.getByText('0.008')).toBeVisible();
+});
 
+test('go to admin dashboard', async ({ page }) => {
   // Admin Dashboard
+  await basicInit(page);
   await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible();
   await page.getByRole('link', { name: 'Admin' }).click();
   await expect(page.getByRole('button', { name: 'Add Franchise' })).toBeVisible();
   await page.getByRole('button', { name: 'Add Franchise' }).click();
+});
+
+test('create franchise', async ({ page }) => {
 
   // Create Franchise
   await expect(page.getByText('Create franchise', { exact: true })).toBeVisible();
@@ -145,7 +154,16 @@ test('purchase with login', async ({ page }) => {
   await page.getByRole('textbox', { name: 'franchise name' }).click();
   await page.getByRole('textbox', { name: 'franchise name' }).fill('test');
   await page.getByRole('textbox', { name: 'franchisee admin email' }).click();
-  await page.getByRole('textbox', { name: 'franchisee admin email' }).fill('realreal@jwt.com');
+  await page.getByRole('textbox', { name: 'franchisee admin email' }).fill('a@jwt.com');
   await expect(page.getByRole('button', { name: 'Create' })).toBeVisible();
   await page.getByRole('button', { name: 'Create' }).click();
 });
+
+test('close franchise', async ({ page }) => {
+  // Close Franchise
+  await expect(page.locator('tbody:nth-child(4) > .border-neutral-500 > .px-6 > .px-2')).toBeVisible();
+  await page.locator('tbody:nth-child(4) > .border-neutral-500 > .px-6 > .px-2').click();
+  await expect(page.getByRole('button', { name: 'Close' })).toBeVisible();
+  await page.getByRole('button', { name: 'Close' }).click();
+});
+  // Go to About and History pages
