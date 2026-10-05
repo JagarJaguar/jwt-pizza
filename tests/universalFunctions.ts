@@ -147,3 +147,14 @@ export async function login(page: Page) {
     await page.getByRole('textbox', { name: 'Password' }).fill('a');
     await page.getByRole('button', { name: 'Login' }).click();
 }
+
+export async function mockUserPages(page: Page) {
+  await page.route(/\/api\/user(\?.*)?$/, async (route) => {
+    const pageNumber = new URL(route.request().url()).searchParams.get('page');
+    if (pageNumber === '2') {
+      await route.fulfill({ json: { users: [{ id: '7', name: 'Page Two', email: 'two@jwt.com', roles: [{ role: 'diner' }] }], more: false } });
+    } else {
+      await route.fulfill({ json: { users: [{ id: '6', name: 'Page One', email: 'one@jwt.com', roles: [{ role: 'diner' }] }], more: true } });
+    }
+  });
+}
