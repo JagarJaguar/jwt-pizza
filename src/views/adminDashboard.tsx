@@ -82,9 +82,13 @@ export default function AdminDashboard(props: Props) {
               <tfoot>
                 <tr>
                   <td colSpan={3} className="text-end text-sm font-medium">
-                    <button className="w-12 p-1 text-sm font-semibold rounded-lg border border-transparent bg-white text-grey border-grey m-1 hover:bg-orange-200 disabled:bg-neutral-300" onClick={() => setUserPage(userPage + 1)}>
+                    <button className="w-12 p-1 text-sm font-semibold rounded-lg border border-transparent bg-white text-grey border-grey m-1 hover:bg-orange-200 disabled:bg-neutral-300" onClick={() => setUserPage(userPage - 1)} disabled={userPage <= 1}>
+                      Prev
+                    </button>
+                    <button className="w-12 p-1 text-sm font-semibold rounded-lg border border-transparent bg-white text-grey border-grey m-1 hover:bg-orange-200 disabled:bg-neutral-300" onClick={() => setUserPage(userPage + 1)} disabled={!userList.more}>
                       Next
                     </button>
+
                   </td>
                 </tr>
               </tfoot>

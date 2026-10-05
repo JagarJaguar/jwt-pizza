@@ -23,16 +23,21 @@ test('list users', async ({ page }) => {
     await expect(page.getByRole('cell', { name: 'franchisee', exact: true })).toBeVisible();
 });
 
-
 test('pagination', async ({ page }) => {
     await basicInit(page);
     await mockUserPages(page);
     await login(page);
     
+    // Go to next page
     await page.getByRole('link', { name: 'Admin' }).click();
     await expect(page.getByRole('main')).toContainText('Page One');
     await expect(page.getByRole('button', { name: 'Next' })).toBeVisible();
     await page.getByRole('button', { name: 'Next' }).click();
     await expect(page.getByRole('main')).toContainText('Page Two');
 
+    // Next/prev disabled & prev page goes to previous page
+    await expect(page.getByRole('button', { name: 'Next' })).toBeDisabled();
+    await page.getByRole('button', { name: 'Prev' }).click();
+    await expect(page.getByRole('main')).toContainText('Page One');
+    await expect(page.getByRole('button', { name: 'Prev' })).toBeDisabled();
 });
