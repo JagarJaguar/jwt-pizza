@@ -54,3 +54,13 @@ test('user filter', async ({ page }) => {
     await expect(page.getByRole('main')).not.toContainText('pizza diner');
     await expect(page.getByRole('main')).toContainText('admin dude');
 });
+
+test('delete user', async ({ page }) => {
+    await basicInit(page);
+    await login(page);
+
+    await page.getByRole('link', { name: 'Admin' }).click();
+    await expect(page.getByRole('row', { name: 'admin dude d@jwt.com admin' }).getByRole('button')).toBeVisible();
+    await expect(page.getByRole('row', { name: 'pizza diner diner@jwt.com' }).getByRole('button')).toBeVisible();
+    await expect(page.getByRole('row', { name: 'pizza franchisee f@jwt.com' }).getByRole('button')).toBeVisible();
+});
