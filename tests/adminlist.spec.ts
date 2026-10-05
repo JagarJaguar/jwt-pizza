@@ -18,4 +18,16 @@ test('list users', async ({ page }) => {
     await expect(page.getByRole('columnheader', { name: 'Email' })).toBeVisible();
     await expect(page.getByRole('columnheader', { name: 'Role' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Users' })).toBeVisible();
+
+    await expect(page.getByRole('cell', { name: 'admin dude' })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'd@jwt.com' })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'admin', exact: true })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'pizza diner' })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'diner@jwt.com' })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'diner', exact: true })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'pizza franchisee' })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'f@jwt.com' })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'franchisee', exact: true })).toBeVisible();
+
+    
 });

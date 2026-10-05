@@ -83,7 +83,7 @@ export async function basicInit(page: Page) {
     // Order a pizza.
     await page.route('*/**/api/order', async (route) => {
         if (await route.request().method() == 'GET') {
-            await route.fulfill({ json: { dinerId: 4, orders: [{ id: 1, franchiseId: 1, storeId: 1, date: '2024-06-05T05:14:40.000Z', items: [{ id: 1, menuId: 1, description: 'Veggie', price: 0.05 }] }], page: 1 }});
+            await route.fulfill({ json: { dinerId: 4, orders: [{ id: 1, franchiseId: 1, storeId: 1, date: '2024-06-05T05:14:40.000Z', items: [{ id: 1, menuId: 1, description: 'Veggie', price: 0.05 }] }], page: 1 } });
             return;
         };
         const orderReq = route.request().postDataJSON();
@@ -117,13 +117,27 @@ export async function basicInit(page: Page) {
 
     // Update user
     await page.route('*/**/api/user/5', async (route) => {
-        const newUser = { user: { id: '5', name: 'pizza dinerx', email: 'dinerx@jwt.com', password: 'b', roles: [{ role: Role.Diner }] }, token: 'tttttt'  }
+        const newUser = { user: { id: '5', name: 'pizza dinerx', email: 'dinerx@jwt.com', password: 'b', roles: [{ role: Role.Diner }] }, token: 'tttttt' }
         expect(route.request().method()).toBe('PUT');
         await route.fulfill({ json: newUser });
         validUsers['diner@jwt.com'].name = 'pizza dinerx';
         validUsers['diner@jwt.com'].email = 'dinerx@jwt.com';
         validUsers['diner@jwt.com'].password = 'b';
         validUsers['dinerx@jwt.com'] = validUsers['diner@jwt.com']
+    });
+
+    // Standard users
+    await page.route(/\/api\/user(\?.*)?$/, async (route) => {
+        const userRes = {
+            users: [
+                { id: '3', name: 'admin dude', email: 'd@jwt.com', roles: [{ role: Role.Admin }] },
+                { id: '5', name: 'pizza diner', email: 'diner@jwt.com', roles: [{ role: Role.Diner }] },
+                { id: '4', name: 'pizza franchisee', email: 'f@jwt.com', roles: [{ role: Role.Franchisee }] },
+            ],
+            more: false,
+        };
+        expect(route.request().method()).toBe('GET');
+        await route.fulfill({ json: userRes });
     });
 }
 

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import NotFound from './notFound';
 import Button from '../components/button';
 import { pizzaService } from '../service/service';
-import { Franchise, FranchiseList, Role, Store, User } from '../service/pizzaService';
+import { Franchise, FranchiseList, Role, Store, User, UserList } from '../service/pizzaService';
 import { TrashIcon } from '../icons';
 
 interface Props {
@@ -16,12 +16,19 @@ export default function AdminDashboard(props: Props) {
   const [franchiseList, setFranchiseList] = React.useState<FranchiseList>({ franchises: [], more: false });
   const [franchisePage, setFranchisePage] = React.useState(0);
   const filterFranchiseRef = React.useRef<HTMLInputElement>(null);
+  const [userList, setUserList] = React.useState<UserList>({ users: [], more: false });
 
   React.useEffect(() => {
     (async () => {
       setFranchiseList(await pizzaService.getFranchises(franchisePage, 3, '*'));
     })();
   }, [props.user, franchisePage]);
+
+  React.useEffect(() => {
+    (async () => {
+      setUserList(await pizzaService.getUsers(1, 10, '*'));
+    })();
+  }, [props.user]);
 
   function createFranchise() {
     navigate('/admin-dashboard/create-franchise');
@@ -56,7 +63,15 @@ export default function AdminDashboard(props: Props) {
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200"></tbody>
+              <tbody className="divide-y divide-gray-200">
+                {userList.users.map((user) => (
+                  <tr key={user.id}>
+                    <td className="text-start px-2 whitespace-nowrap text-sm text-gray-800">{user.name}</td>
+                    <td className="text-start px-2 whitespace-nowrap text-sm text-gray-800">{user.email}</td>
+                    <td className="text-start px-2 whitespace-nowrap text-sm text-gray-800">{user.roles?.map((r) => r.role).join(', ')}</td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
         </div>
