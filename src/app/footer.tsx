@@ -30,7 +30,7 @@ export default function Footer(props: Props) {
               )
           )}
         </nav>
-        <p className="text-sm text-center italic text-gray-400">© 2024 JWT Pizza LTD. All rights reserved. Version: {version}</p>
+        <p className="text-sm text-center italic text-gray-400">© 2026 JWT Pizza LTD. All rights reserved. Version: {version}</p>
       </div>
     </footer>
   );
