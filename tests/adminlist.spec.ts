@@ -13,4 +13,9 @@ test('list users', async ({ page }) => {
     await basicInit(page);
     await login(page);
     await page.getByRole('link', { name: 'Admin' }).click();
+
+    await expect(page.getByRole('columnheader', { name: 'Name' })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: 'Email' })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: 'Role' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Users' })).toBeVisible();
 });
