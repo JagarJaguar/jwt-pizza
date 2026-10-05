@@ -1,5 +1,5 @@
 import { test, expect } from 'playwright-test-coverage';
-import { basicInit, login, mockUserPages } from './universalFunctions';
+import { basicInit, login, mockUserPages, mockUserFilter } from './universalFunctions';
 import { Page } from '@playwright/test';
 
 test('list users', async ({ page }) => {
@@ -40,4 +40,17 @@ test('pagination', async ({ page }) => {
     await page.getByRole('button', { name: 'Prev' }).click();
     await expect(page.getByRole('main')).toContainText('Page One');
     await expect(page.getByRole('button', { name: 'Prev' })).toBeDisabled();
+});
+
+test('user filter', async ({ page }) => {
+    await basicInit(page);
+    await mockUserFilter(page);
+    await login(page);
+
+    await page.getByRole('link', { name: 'Admin' }).click();
+    await expect(page.getByRole('main')).toContainText('pizza diner');
+    await page.getByRole('textbox', { name: 'Name' }).fill('admin');
+    await page.getByRole('button', { name: 'Search' }).click();
+    await expect(page.getByRole('main')).not.toContainText('pizza diner');
+    await expect(page.getByRole('main')).toContainText('admin dude');
 });

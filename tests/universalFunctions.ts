@@ -158,3 +158,12 @@ export async function mockUserPages(page: Page) {
     }
   });
 }
+
+export async function mockUserFilter(page: Page) {
+  await page.route(/\/api\/user(\?.*)?$/, async (route) => {
+    const name = new URL(route.request().url()).searchParams.get('name');
+    const admin = { id: '3', name: 'admin dude', email: 'd@jwt.com', roles: [{ role: 'admin' }] };
+    const diner = { id: '5', name: 'pizza diner', email: 'diner@jwt.com', roles: [{ role: 'diner' }] };
+    await route.fulfill({ json: { users: name === '*admin*' ? [admin] : [admin, diner], more: false } });
+  });
+}
