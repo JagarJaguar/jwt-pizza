@@ -64,6 +64,6 @@ test('delete a user', async ({ page }) => {
     await expect(page.getByRole('row', { name: 'admin dude d@jwt.com admin' }).getByRole('button')).toBeVisible();
     await expect(page.getByRole('row', { name: 'pizza diner diner@jwt.com' }).getByRole('button')).toBeVisible();
     await expect(page.getByRole('row', { name: 'pizza franchisee f@jwt.com' }).getByRole('button')).toBeVisible();
-    // await page.getByRole('row', { name: 'pizza franchisee f@jwt.com' }).getByRole('button').click();
-    // await expect(page.getByRole('row', { name: 'pizza franchisee f@jwt.com' }).getByRole('button')).not.toBeVisible();
+    await page.getByRole('row', { name: 'pizza franchisee f@jwt.com' }).getByRole('button').click();
+    await expect(page.getByRole('row', { name: 'pizza franchisee f@jwt.com' }).getByRole('button')).not.toBeVisible();
 });
