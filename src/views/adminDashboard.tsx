@@ -23,18 +23,6 @@ export default function AdminDashboard(props: Props) {
 
   React.useEffect(() => {
     (async () => {
-      setFranchiseList(await pizzaService.getFranchises(franchisePage, 3, '*'));
-    })();
-  }, [props.user, franchisePage]);
-
-  React.useEffect(() => {
-    (async () => {
-      setUserList(await pizzaService.getUsers(userPage, 10, '*'));
-    })();
-  }, [props.user, userPage]);
-
-  React.useEffect(() => {
-    (async () => {
       setUserList(await pizzaService.getUsers(1, 10, '*'));
     })();
   }, [props.user]);

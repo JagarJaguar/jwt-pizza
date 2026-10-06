@@ -55,7 +55,7 @@ test('user filter', async ({ page }) => {
     await expect(page.getByRole('main')).toContainText('admin dude');
 });
 
-test('delete user', async ({ page }) => {
+test('delete a user', async ({ page }) => {
     await basicInit(page);
     await login(page);
 
