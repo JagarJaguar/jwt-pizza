@@ -1,5 +1,5 @@
 import { test, expect } from 'playwright-test-coverage';
-import { basicInit, login, mockUserPages, mockUserFilter } from './universalFunctions';
+import { basicInit, login, mockUserPages, mockUserFilter, mockUserDelete } from './universalFunctions';
 import { Page } from '@playwright/test';
 
 test('list users', async ({ page }) => {
@@ -27,7 +27,7 @@ test('pagination', async ({ page }) => {
     await basicInit(page);
     await mockUserPages(page);
     await login(page);
-    
+
     // Go to next page
     await page.getByRole('link', { name: 'Admin' }).click();
     await expect(page.getByRole('main')).toContainText('Page One');
@@ -57,10 +57,13 @@ test('user filter', async ({ page }) => {
 
 test('delete a user', async ({ page }) => {
     await basicInit(page);
+    await mockUserDelete(page)
     await login(page);
 
     await page.getByRole('link', { name: 'Admin' }).click();
     await expect(page.getByRole('row', { name: 'admin dude d@jwt.com admin' }).getByRole('button')).toBeVisible();
     await expect(page.getByRole('row', { name: 'pizza diner diner@jwt.com' }).getByRole('button')).toBeVisible();
     await expect(page.getByRole('row', { name: 'pizza franchisee f@jwt.com' }).getByRole('button')).toBeVisible();
+    // await page.getByRole('row', { name: 'pizza franchisee f@jwt.com' }).getByRole('button').click();
+    // await expect(page.getByRole('row', { name: 'pizza franchisee f@jwt.com' }).getByRole('button')).not.toBeVisible();
 });

@@ -149,21 +149,37 @@ export async function login(page: Page) {
 }
 
 export async function mockUserPages(page: Page) {
-  await page.route(/\/api\/user(\?.*)?$/, async (route) => {
-    const pageNumber = new URL(route.request().url()).searchParams.get('page');
-    if (pageNumber === '2') {
-      await route.fulfill({ json: { users: [{ id: '7', name: 'Page Two', email: 'two@jwt.com', roles: [{ role: 'diner' }] }], more: false } });
-    } else {
-      await route.fulfill({ json: { users: [{ id: '6', name: 'Page One', email: 'one@jwt.com', roles: [{ role: 'diner' }] }], more: true } });
-    }
-  });
+    await page.route(/\/api\/user(\?.*)?$/, async (route) => {
+        const pageNumber = new URL(route.request().url()).searchParams.get('page');
+        if (pageNumber === '2') {
+            await route.fulfill({ json: { users: [{ id: '7', name: 'Page Two', email: 'two@jwt.com', roles: [{ role: 'diner' }] }], more: false } });
+        } else {
+            await route.fulfill({ json: { users: [{ id: '6', name: 'Page One', email: 'one@jwt.com', roles: [{ role: 'diner' }] }], more: true } });
+        }
+    });
 }
 
 export async function mockUserFilter(page: Page) {
-  await page.route(/\/api\/user(\?.*)?$/, async (route) => {
-    const name = new URL(route.request().url()).searchParams.get('name');
-    const admin = { id: '3', name: 'admin dude', email: 'd@jwt.com', roles: [{ role: 'admin' }] };
-    const diner = { id: '5', name: 'pizza diner', email: 'diner@jwt.com', roles: [{ role: 'diner' }] };
-    await route.fulfill({ json: { users: name === '*admin*' ? [admin] : [admin, diner], more: false } });
-  });
+    await page.route(/\/api\/user(\?.*)?$/, async (route) => {
+        const name = new URL(route.request().url()).searchParams.get('name');
+        const admin = { id: '3', name: 'admin dude', email: 'd@jwt.com', roles: [{ role: 'admin' }] };
+        const diner = { id: '5', name: 'pizza diner', email: 'diner@jwt.com', roles: [{ role: 'diner' }] };
+        await route.fulfill({ json: { users: name === '*admin*' ? [admin] : [admin, diner], more: false } });
+    });
+}
+
+export async function mockUserDelete(page: Page) {
+    let users = [
+        { id: '3', name: 'admin dude', email: 'd@jwt.com', roles: [{ role: 'admin' }] },
+        { id: '5', name: 'pizza diner', email: 'diner@jwt.com', roles: [{ role: 'diner' }] },
+        { id: '4', name: 'pizza franchisee', email: 'f@jwt.com', roles: [{ role: 'franchisee' }] },
+    ];
+    await page.route(/\/api\/user(\?.*)?$/, async (route) => {
+        await route.fulfill({ json: { users, more: false } });
+    });
+    await page.route('*/**/api/user/4', async (route) => {
+        expect(route.request().method()).toBe('DELETE');
+        users = users.filter((user) => user.id !== '4');
+        await route.fulfill({ json: { message: 'user deleted' } });
+    });
 }
