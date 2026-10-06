@@ -5,7 +5,7 @@ import NotFound from './notFound';
 import Button from '../components/button';
 import { pizzaService } from '../service/service';
 import { Franchise, FranchiseList, Role, Store, User, UserList } from '../service/pizzaService';
-import { TrashIcon } from '../icons';
+import { CloseIcon, TrashIcon } from '../icons';
 
 interface Props {
   user: User | null;
@@ -91,8 +91,7 @@ export default function AdminDashboard(props: Props) {
                     <td className="text-start px-2 whitespace-nowrap text-sm text-gray-800">{user.roles?.map((r) => r.role).join(', ')}</td>
                     <td className="px-6 py-1 whitespace-nowrap text-end text-sm font-medium">
                       <button type="button" className="px-2 py-1 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-1 border-orange-400 text-orange-400  hover:border-orange-800 hover:text-orange-800" onClick={() => deleteUser(user)}>
-                        <TrashIcon />
-                        Delete
+                        <CloseIcon className={'deleteUser'} />
                       </button>
                     </td>
                   </tr>
