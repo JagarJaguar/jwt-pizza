@@ -72,7 +72,7 @@ export function scenario_1() {
         },
       }
     )
-    if (!check(response, { 'status equals 200': (response) => response.status.toString() === '200' })) {
+    if (!check(response, { 'login status equals 200': (response) => response.status.toString() === '200' })) {
   console.log(response.body);
   fail('Login was *not* 200');
 }
@@ -158,6 +158,10 @@ export function scenario_1() {
         },
       }
     )
+if (!check(response, { 'purchase status equals 200': (response) => response.status.toString() === '200' })) {
+      console.log(response.body)
+      fail('Purchase was *not* 200')
+    }
     sleep(1.2)
 
     response = http.post(
